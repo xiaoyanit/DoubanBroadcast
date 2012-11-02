@@ -9,6 +9,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -57,14 +58,46 @@ public class DoubanService {
 		return null;
 	}
 	
-	public boolean newPost(String text, Activity activity){
+	public void newPost(String text, Activity activity){
 		PostNewBroadcastTask postTask = new PostNewBroadcastTask(activity);
 		postTask.execute(text);
-		return true;
+	}
+	
+	public void getPosts(Activity activity) {
+		getAllPostsTask tast = new getAllPostsTask(activity);
+		tast.execute();
+	}
+	private class getAllPostsTask extends AsyncTask<String, Void, Boolean> {
+		private JSONObject retData;
+		private Activity mActivity;
+		
+		public getAllPostsTask(Activity activity) {
+			super();
+			this.mActivity = activity;
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			try {
+				HttpGet request =new HttpGet("https://api.douban.com/shuo/v2/statuses/home_timeline");
+				request.addHeader("Authorization", "Bearer "+accessToken);
+			
+				HttpResponse httpResponse = new DefaultHttpClient().execute(request);
+				retData = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+	     protected void onPostExecute(Long result) {
+	    	 Log.i("!!!!", retData.toString());
+	     }
+		
 	}
 
 	private class PostNewBroadcastTask extends AsyncTask<String, Void, Boolean> {
-		
+
 		private Activity mActivity;
 		public PostNewBroadcastTask(Activity activity) {
 			super();
