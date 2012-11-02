@@ -12,7 +12,6 @@ public class MainActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.main);
 
 		SharedPreferences preference = this.getSharedPreferences(DoubanUtil.PREF, MODE_PRIVATE);
@@ -25,9 +24,10 @@ public class MainActivity extends Activity {
 		preference.edit().clear().commit();
 		finish();
 	}
-	
+
 	public void postNewBroadcast(View view) {
 		EditText editText = (EditText) findViewById(R.id.newBroadcastText);
 		service.newPost(editText.getText().toString(), this);
 	}
 }
+ 

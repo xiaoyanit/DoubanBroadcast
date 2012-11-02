@@ -1,7 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/header"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
 
     <Button
         android:layout_width="wrap_content"
@@ -11,10 +18,11 @@
 
     <EditText
         android:id="@+id/newBroadcastText"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10" >
+
         <requestFocus />
     </EditText>
     <Button
@@ -22,5 +30,15 @@
         android:layout_height="wrap_content"
         android:text="Post" 
         android:onClick="postNewBroadcast"/>
+</LinearLayout>
+
+<LinearLayout
+    android:id="@+id/wrapper"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_below="@id/header"
+    android:background="#DDDDDD"
+    android:orientation="vertical" >
 
 </LinearLayout>
+</RelativeLayout>

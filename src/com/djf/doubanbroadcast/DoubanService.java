@@ -15,13 +15,18 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class DoubanService {
 	public static final String CALLBACK = "http://myappdjf.com";
@@ -67,8 +72,9 @@ public class DoubanService {
 		getAllPostsTask tast = new getAllPostsTask(activity);
 		tast.execute();
 	}
+
 	private class getAllPostsTask extends AsyncTask<String, Void, Boolean> {
-		private JSONObject retData;
+		private JSONArray posts;
 		private Activity mActivity;
 		
 		public getAllPostsTask(Activity activity) {
@@ -81,22 +87,33 @@ public class DoubanService {
 			try {
 				HttpGet request =new HttpGet("https://api.douban.com/shuo/v2/statuses/home_timeline");
 				request.addHeader("Authorization", "Bearer "+accessToken);
-			
+
 				HttpResponse httpResponse = new DefaultHttpClient().execute(request);
-				retData = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
+				posts = new JSONArray(EntityUtils.toString(httpResponse.getEntity()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			return null;
+			return true;
 		}
 
-	     protected void onPostExecute(Long result) {
-	    	 Log.i("!!!!", retData.toString());
+	     protected void onPostExecute(Boolean result) {
+	    	 LinearLayout view = (LinearLayout) mActivity.findViewById(R.id.wrapper);
+	    	 for (int i=0;i<posts.length();i++) {
+	    		 try {
+	    			JSONObject postobject = posts.getJSONObject(i);
+					TextView post = new TextView(mActivity);
+					Log.i(postobject.getJSONObject("user").getString("screen_name"),postobject.getString("title"));
+					Log.i(postobject.getString("text"),"~!~!");
+					post.setText(postobject.getJSONObject("user").getString("screen_name")+postobject.getString("title")+postobject.getString("text"));
+					view.addView(post);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+	    	 }
 	     }
-		
 	}
 
-	private class PostNewBroadcastTask extends AsyncTask<String, Void, Boolean> {
+	private class PostNewBroadcastTask extends AsyncTask<String, Void, String> {
 
 		private Activity mActivity;
 		public PostNewBroadcastTask(Activity activity) {
@@ -105,7 +122,7 @@ public class DoubanService {
 		}
 
 		@Override
-		protected Boolean doInBackground(String... text) {
+		protected String doInBackground(String... text) {
 			HttpPost post =new HttpPost("https://api.douban.com/shuo/v2/statuses/");
 			post.addHeader("Authorization", "Bearer "+accessToken);
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -121,6 +138,7 @@ public class DoubanService {
 					Log.i("?????", retJsonObject.getString("code"));
 					Log.i("?????", retJsonObject.getString("msg"));
 					Log.i("?????", retJsonObject.getString("request"));
+					return retJsonObject.getString("msg");
 				}
 			} catch (ClientProtocolException e) {
 				e.printStackTrace();
@@ -131,11 +149,13 @@ public class DoubanService {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-			return false;
+			return "You've posted a new broadcast.";
 		}
 
-	     protected void onPostExecute(Long result) {
-	    	 // TODO: show dialog
+	     protected void onPostExecute(String result) {
+    		 Context context = mActivity.getApplicationContext();
+    		 Toast toast = Toast.makeText(context, result, Toast.LENGTH_SHORT);
+    		 toast.show();
 	     }
 	}
 }
