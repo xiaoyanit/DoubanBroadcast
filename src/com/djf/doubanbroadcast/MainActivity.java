@@ -16,7 +16,7 @@ public class MainActivity extends Activity {
 
 		SharedPreferences preference = this.getSharedPreferences("pref!", MODE_PRIVATE);
 		service = new DoubanService(preference.getString("token", null), preference.getString("user", null));
-		service.newPost("test api [From my iToilet]");
+		service.newPost("TestAPI", this);
 	}
 
 	public void logout(View view) {

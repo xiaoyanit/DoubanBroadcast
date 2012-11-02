@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -13,7 +14,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
 
@@ -53,26 +58,50 @@ public class DoubanService {
 		return null;
 	}
 	
-	public boolean newPost(String text){
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-		.detectNetwork()
-		.penaltyLog()
-		.build());
-		HttpPost post =new HttpPost("https://api.douban.com/shuo/v2/statuses/");
-		post.addHeader("Authorization", "Bearer "+accessToken);
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("source", "06dccbf9c6a1907c149663ed53e4b174"));
-		params.add(new BasicNameValuePair("text", text));
-		params.add(new BasicNameValuePair("access_token", accessToken));
-		try {
-			post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-			HttpResponse httpResponse = new DefaultHttpClient().execute(post);
-			Log.i("!!!!!!!!!", Integer.toString(httpResponse.getStatusLine().getStatusCode()));
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public boolean newPost(String text, Activity activity){
+		PostNewBroadcastTask postTask = new PostNewBroadcastTask(activity);
+		postTask.execute(text);
 		return true;
+	}
+	
+	private class PostNewBroadcastTask extends AsyncTask<String, Void, Boolean> {
+		
+		private Activity mActivity;
+		public PostNewBroadcastTask(Activity activity) {
+			super();
+			this.mActivity = activity;
+		}
+		@Override
+		protected Boolean doInBackground(String... text) {
+			HttpPost post =new HttpPost("https://api.douban.com/shuo/v2/statuses/");
+			post.addHeader("Authorization", "Bearer "+accessToken);
+			List<NameValuePair> params = new ArrayList<NameValuePair>();
+			params.add(new BasicNameValuePair("source", "06dccbf9c6a1907c149663ed53e4b174"));
+			params.add(new BasicNameValuePair("text", text[0]));
+			params.add(new BasicNameValuePair("access_token", accessToken));
+			try {
+				post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+				HttpResponse httpResponse = new DefaultHttpClient().execute(post);
+				Log.i("!!!!!!!!!", Integer.toString(httpResponse.getStatusLine().getStatusCode()));
+				if (httpResponse.getStatusLine().getStatusCode()==400) {
+					JSONObject retJsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
+					Log.i("?????", retJsonObject.getString("code"));
+					Log.i("?????", retJsonObject.getString("msg"));
+					Log.i("?????", retJsonObject.getString("request"));
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return false;
+		}
+
+	     protected void onPostExecute(Long result) {
+	     }
 	}
 }
