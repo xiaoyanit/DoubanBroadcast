@@ -47,8 +47,7 @@ public class DoubanService {
 			params.add(new BasicNameValuePair("grant_type", "authorization_code"));
 			params.add(new BasicNameValuePair("code", authorization_code));
 			post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
-			HttpResponse httpResponse = new DefaultHttpClient()
-					.execute(post);
+			HttpResponse httpResponse = new DefaultHttpClient().execute(post);
 			if (httpResponse.getStatusLine().getStatusCode() == 200) {
 				return EntityUtils.toString(httpResponse.getEntity());
 			}
@@ -63,7 +62,7 @@ public class DoubanService {
 		postTask.execute(text);
 		return true;
 	}
-	
+
 	private class PostNewBroadcastTask extends AsyncTask<String, Void, Boolean> {
 		
 		private Activity mActivity;
@@ -71,6 +70,7 @@ public class DoubanService {
 			super();
 			this.mActivity = activity;
 		}
+
 		@Override
 		protected Boolean doInBackground(String... text) {
 			HttpPost post =new HttpPost("https://api.douban.com/shuo/v2/statuses/");
@@ -83,7 +83,7 @@ public class DoubanService {
 				post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 				HttpResponse httpResponse = new DefaultHttpClient().execute(post);
 				Log.i("!!!!!!!!!", Integer.toString(httpResponse.getStatusLine().getStatusCode()));
-				if (httpResponse.getStatusLine().getStatusCode()==400) {
+				if (httpResponse.getStatusLine().getStatusCode()>=400) {
 					JSONObject retJsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
 					Log.i("?????", retJsonObject.getString("code"));
 					Log.i("?????", retJsonObject.getString("msg"));
@@ -102,6 +102,7 @@ public class DoubanService {
 		}
 
 	     protected void onPostExecute(Long result) {
+	    	 // TODO: show dialog
 	     }
 	}
 }

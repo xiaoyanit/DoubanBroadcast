@@ -32,8 +32,8 @@ public class OAuth2Activity extends Activity {
 							JSONObject retJsonObject = new JSONObject(DoubanService.getAccessToken(uri.getQueryParameter("code")));
 							String token = retJsonObject.getString("access_token");
 							String user = retJsonObject.getString("douban_user_id");
-							SharedPreferences preference = getSharedPreferences("pref!", MODE_PRIVATE);
-							preference.edit().putString("token", token).putString("user", user).commit();
+							SharedPreferences preference = getSharedPreferences(DoubanUtil.PREF, MODE_PRIVATE);
+							preference.edit().putString(DoubanUtil.PREF_ACCESS_TOKEN, token).putString(DoubanUtil.PREF_USER, user).commit();
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}

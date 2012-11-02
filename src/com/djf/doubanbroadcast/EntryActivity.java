@@ -16,8 +16,8 @@ public class EntryActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		SharedPreferences preference = this.getSharedPreferences("pref!", MODE_PRIVATE);
-		if (preference.getString("token", "") != "") {
+		SharedPreferences preference = this.getSharedPreferences(DoubanUtil.PREF, MODE_PRIVATE);
+		if (preference.getString(DoubanUtil.PREF_ACCESS_TOKEN, "") != "") {
 			Intent intent = new Intent(this, MainActivity.class);
 			startActivity(intent);
 		}

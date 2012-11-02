@@ -14,13 +14,12 @@ public class MainActivity extends Activity {
 		
 		setContentView(R.layout.main);
 
-		SharedPreferences preference = this.getSharedPreferences("pref!", MODE_PRIVATE);
-		service = new DoubanService(preference.getString("token", null), preference.getString("user", null));
-		service.newPost("TestAPI", this);
+		SharedPreferences preference = this.getSharedPreferences(DoubanUtil.PREF, MODE_PRIVATE);
+		service = new DoubanService(preference.getString(DoubanUtil.PREF_ACCESS_TOKEN, null), preference.getString(DoubanUtil.PREF_USER, null));
 	}
 
 	public void logout(View view) {
-		SharedPreferences preference = this.getSharedPreferences("pref!", MODE_PRIVATE);
+		SharedPreferences preference = this.getSharedPreferences(DoubanUtil.PREF, MODE_PRIVATE);
 		preference.edit().clear().commit();
 		finish();
 	}
