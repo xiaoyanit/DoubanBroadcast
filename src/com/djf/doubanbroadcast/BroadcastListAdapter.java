@@ -3,15 +3,15 @@ package com.djf.doubanbroadcast;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 public class BroadcastListAdapter extends BaseAdapter {
-	private Context context;
+	private MainActivity context;
 	private JSONArray sayings;
-	public BroadcastListAdapter(Context context, JSONArray sayings) {
+
+	public BroadcastListAdapter(MainActivity context, JSONArray sayings) {
 		this.context = context;
 		this.sayings = sayings;
 	}

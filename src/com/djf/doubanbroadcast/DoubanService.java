@@ -19,14 +19,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -36,7 +36,7 @@ public class DoubanService {
 	
 	private String accessToken;
 	private String user;
-	
+
 	public DoubanService(String token, String user) {
 		this.accessToken = token;
 		this.user = user;
@@ -66,21 +66,56 @@ public class DoubanService {
 		return null;
 	}
 	
-	public void newPost(String text, Activity activity){
+	public void downloadImage(String url, ImageView view) {
+		DownloadImageTask task = new DownloadImageTask(view);
+		task.execute(url);
+	}
+
+	public void newPost(String text, MainActivity activity){
 		PostNewBroadcastTask postTask = new PostNewBroadcastTask(activity);
 		postTask.execute(text);
 	}
 	
-	public void getPosts(Activity activity) {
-		getAllPostsTask tast = new getAllPostsTask(activity);
+	public void getPosts(MainActivity activity) {
+		GetAllPostsTask tast = new GetAllPostsTask(activity);
 		tast.execute();
 	}
 
-	private class getAllPostsTask extends AsyncTask<String, Void, Boolean> {
-		private JSONArray posts;
-		private Activity mActivity;
+	public class DownloadImageTask extends AsyncTask<String, Void, Boolean> {
+		private Bitmap bitmap;
+		private ImageView target;
 		
-		public getAllPostsTask(Activity activity) {
+		public DownloadImageTask(ImageView view) {
+			super();
+			target = view;
+		}
+
+		@Override
+		protected Boolean doInBackground(String... params) {
+			HttpGet request = new HttpGet(params[0]);
+			HttpResponse response;
+			try {
+				response = new DefaultHttpClient().execute(request);
+				bitmap = BitmapFactory.decodeStream(response.getEntity().getContent());
+			} catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+		
+		@Override
+		protected void onPostExecute(Boolean result) {
+			target.setImageBitmap(bitmap);
+		}
+		
+	}
+
+	private class GetAllPostsTask extends AsyncTask<String, Void, Boolean> {
+		private JSONArray posts;
+		private MainActivity mActivity;
+		
+		public GetAllPostsTask(MainActivity activity) {
 			super();
 			this.mActivity = activity;
 		}
@@ -94,7 +129,7 @@ public class DoubanService {
 		@Override
 		protected Boolean doInBackground(String... params) {
 			try {
-				HttpGet request =new HttpGet("https://api.douban.com/shuo/v2/statuses/home_timeline");
+				HttpGet request = new HttpGet("https://api.douban.com/shuo/v2/statuses/home_timeline");
 				request.addHeader("Authorization", "Bearer "+accessToken);
 
 				HttpResponse httpResponse = new DefaultHttpClient().execute(request);
@@ -105,6 +140,7 @@ public class DoubanService {
 			return true;
 		}
 
+		@Override
 	     protected void onPostExecute(Boolean result) {
 	    	 ListView view = (ListView) mActivity.findViewById(R.id.wrapper);
 	    	 BroadcastListAdapter adapter = new BroadcastListAdapter(mActivity, posts);
@@ -115,8 +151,8 @@ public class DoubanService {
 
 	private class PostNewBroadcastTask extends AsyncTask<String, Void, String> {
 
-		private Activity mActivity;
-		public PostNewBroadcastTask(Activity activity) {
+		private MainActivity mActivity;
+		public PostNewBroadcastTask(MainActivity activity) {
 			super();
 			this.mActivity = activity;
 		}
@@ -132,12 +168,8 @@ public class DoubanService {
 			try {
 				post.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 				HttpResponse httpResponse = new DefaultHttpClient().execute(post);
-				Log.i("!!!!!!!!!", Integer.toString(httpResponse.getStatusLine().getStatusCode()));
 				if (httpResponse.getStatusLine().getStatusCode()>=400) {
 					JSONObject retJsonObject = new JSONObject(EntityUtils.toString(httpResponse.getEntity()));
-					Log.i("?????", retJsonObject.getString("code"));
-					Log.i("?????", retJsonObject.getString("msg"));
-					Log.i("?????", retJsonObject.getString("request"));
 					return retJsonObject.getString("msg");
 				}
 			} catch (ClientProtocolException e) {
@@ -152,10 +184,11 @@ public class DoubanService {
 			return "You've posted a new broadcast.";
 		}
 
+		@Override
 	     protected void onPostExecute(String result) {
-    		 Context context = mActivity.getApplicationContext();
-    		 Toast toast = Toast.makeText(context, result, Toast.LENGTH_SHORT);
+    		 Toast toast = Toast.makeText(mActivity, result, Toast.LENGTH_SHORT);
     		 toast.show();
+    		 getPosts(mActivity);
 	     }
 	}
 }

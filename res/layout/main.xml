@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="@string/logout"
         android:onClick="logout"/>
-
+
     <EditText
         android:id="@+id/newBroadcastText"
         android:layout_width="0dp"
@@ -31,12 +31,15 @@
         android:text="Post" 
         android:onClick="postNewBroadcast"/>
 </LinearLayout>
+
 <ListView
     android:id="@+id/wrapper"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_below="@id/header"
-    android:background="#DDDDDD"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingBottom="5dp"
+    android:paddingTop="5dp" >
+
 </ListView>
 </RelativeLayout>
