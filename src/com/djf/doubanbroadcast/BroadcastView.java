@@ -5,7 +5,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,7 +16,7 @@ import android.widget.TextView;
 public class BroadcastView extends LinearLayout {
 	private JSONObject json;
 
-    public BroadcastView(MainActivity context, JSONObject json) {
+    public BroadcastView(final MainActivity context, final JSONObject json) {
 		super(context);
 		this.json = json;
 
@@ -24,11 +26,21 @@ public class BroadcastView extends LinearLayout {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
-		avatar.setPadding(10, 10, 10, 10);
 
+		avatar.setPadding(14, 14, 14, 14);
+
+		//TODO: cache avatar.
 		addView(avatar);
 		addView(makeContentView(context));
+		
+		this.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				Intent intent = new Intent(context, ItemActivity.class);
+				intent.putExtra("json", json.toString());
+				context.startActivity(intent);
+			}
+		});
 	}
 
     private String stripText(String text) {
@@ -45,7 +57,7 @@ public class BroadcastView extends LinearLayout {
     private LinearLayout makeContentView(Context context) {
     	LinearLayout content = new LinearLayout(context);
     	content.setOrientation(VERTICAL);
-    	content.setPadding(0, 10, 20, 0);
+    	content.setPadding(0, 12, 25, 12);
 		try {
 			String text;
 			JSONObject reshare = json.has("reshared_status") ? json.getJSONObject("reshared_status") : null;
@@ -58,13 +70,13 @@ public class BroadcastView extends LinearLayout {
 					+ (reshare != null ? reshare : json).getString("title") + " "
 					+ (attach != null ? attach.getString("title") : "");
 			title.setText(stripText(text));
-			title.setTextColor(0xff202020);
+			title.setTextColor(0xff404040);
 			content.addView(title);
 
 			if (attach != null && !attach.getString("description").equals("")) {
 				TextView description = new TextView(context);
 				description.setText(stripText(attach.getString("description")));
-				description.setBackgroundColor(0xffdddddd);
+				description.setBackgroundColor(0xffe0e0e0);
 				description.setTextSize(10);
 				description.setPadding(3, 3, 3, 3);
 				content.addView(description);

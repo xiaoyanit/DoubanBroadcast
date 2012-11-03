@@ -23,9 +23,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.StrictMode;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -119,12 +116,6 @@ public class DoubanService {
 			super();
 			this.mActivity = activity;
 		}
-		
-		private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
-		    public void onItemClick(AdapterView parent, View v, int position, long id) {
-		    	mActivity.finish();
-		    }
-		};
 
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -145,7 +136,6 @@ public class DoubanService {
 	    	 ListView view = (ListView) mActivity.findViewById(R.id.wrapper);
 	    	 BroadcastListAdapter adapter = new BroadcastListAdapter(mActivity, posts);
 	    	 view.setAdapter(adapter);
-	    	 view.setOnItemClickListener(mMessageClickedHandler);
 	     }
 	}
 
