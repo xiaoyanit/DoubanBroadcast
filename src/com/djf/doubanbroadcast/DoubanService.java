@@ -24,10 +24,13 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.Toast;
 
+// TODO: Maybe make this a subclass of Service?
 public class DoubanService {
 	public static final String CALLBACK = "http://myappdjf.com";
 	
@@ -81,6 +84,12 @@ public class DoubanService {
 			super();
 			this.mActivity = activity;
 		}
+		
+		private OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
+		    public void onItemClick(AdapterView parent, View v, int position, long id) {
+		    	mActivity.finish();
+		    }
+		};
 
 		@Override
 		protected Boolean doInBackground(String... params) {
@@ -97,19 +106,10 @@ public class DoubanService {
 		}
 
 	     protected void onPostExecute(Boolean result) {
-	    	 LinearLayout view = (LinearLayout) mActivity.findViewById(R.id.wrapper);
-	    	 for (int i=0;i<posts.length();i++) {
-	    		 try {
-	    			JSONObject postobject = posts.getJSONObject(i);
-					TextView post = new TextView(mActivity);
-					Log.i(postobject.getJSONObject("user").getString("screen_name"),postobject.getString("title"));
-					Log.i(postobject.getString("text"),"~!~!");
-					post.setText(postobject.getJSONObject("user").getString("screen_name")+postobject.getString("title")+postobject.getString("text"));
-					view.addView(post);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-	    	 }
+	    	 ListView view = (ListView) mActivity.findViewById(R.id.wrapper);
+	    	 BroadcastListAdapter adapter = new BroadcastListAdapter(mActivity, posts);
+	    	 view.setAdapter(adapter);
+	    	 view.setOnItemClickListener(mMessageClickedHandler);
 	     }
 	}
 

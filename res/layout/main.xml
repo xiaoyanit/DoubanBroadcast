@@ -31,14 +31,12 @@
         android:text="Post" 
         android:onClick="postNewBroadcast"/>
 </LinearLayout>
-
-<LinearLayout
+<ListView
     android:id="@+id/wrapper"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_below="@id/header"
     android:background="#DDDDDD"
     android:orientation="vertical" >
-
-</LinearLayout>
+</ListView>
 </RelativeLayout>
