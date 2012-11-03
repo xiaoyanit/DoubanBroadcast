@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-
+
     <ImageView
         android:id="@+id/item_avatar"
         android:layout_width="wrap_content"
@@ -9,13 +9,14 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/ic_action_search" />
-
+
     <LinearLayout
         android:id="@+id/item_wrapper"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:orientation="vertical" >
+
         <LinearLayout
             android:id="@+id/item_title"
             android:layout_width="match_parent"
@@ -28,14 +29,45 @@
                 android:text="Irachex"
                 android:textColor="#000000"
                 android:textSize="20dp" />
-
+
             <TextView
                 android:id="@+id/item_user_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
                 android:text="推荐单曲" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_attach"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="#f0f0f0"
+            android:paddingBottom="3dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:paddingTop="3dp" >
+
+            <TextView
+                android:id="@+id/item_attach_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/item_attach_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
         </LinearLayout>
 
     </LinearLayout>

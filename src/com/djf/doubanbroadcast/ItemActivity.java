@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class ItemActivity extends Activity{
 	public DoubanService service;
+	private Broadcast item;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -21,16 +22,26 @@ public class ItemActivity extends Activity{
 		service = new DoubanService(preference.getString(DoubanUtil.PREF_ACCESS_TOKEN, null), preference.getString(DoubanUtil.PREF_USER, null));
 		
 		ImageView avatar = (ImageView) findViewById(R.id.item_avatar);
-		avatar.setScaleType(ImageView.ScaleType.FIT_XY);
+		ImageView media = (ImageView) findViewById(R.id.item_attach_img);
 		TextView user = (TextView) findViewById(R.id.item_user);
-		
-		JSONObject json;
+		TextView action = (TextView) findViewById(R.id.item_user_action);
+		TextView desc = (TextView) findViewById(R.id.item_attach_desc);
+
 		try {
-			json = new JSONObject(getIntent().getStringExtra("json"));
-			service.downloadImage(json.getJSONObject("user").getString("small_avatar"), avatar);
-			user.setText(json.getJSONObject("user").getString("screen_name"));
+			item = new Broadcast(new JSONObject(getIntent().getStringExtra("json")));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+
+		service.downloadImage(item.getOriginAvatar(), avatar);
+		user.setText(item.getOriginScreenName());
+		action.setText(item.getOriginTitle());
+
+		String attachImage = item.getAttachImg();
+		if (!attachImage.equals("")) {
+			service.downloadImage(attachImage, media);
+		}
+		desc.setText(item.getAttachDesc());
+		
 	}
 }

@@ -13,7 +13,7 @@ public class Broadcast extends JSONObject{
 		obj = object;
 		reshared = obj.has("reshared_status");
 		try {
-			JSONArray attachs = object.getJSONArray("attachments");
+			JSONArray attachs = origin().getJSONArray("attachments");
 			if (attachs.length() != 0) attach = attachs.getJSONObject(0);
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -31,7 +31,7 @@ public class Broadcast extends JSONObject{
 
 	public String getOriginScreenName() {
 		try {
-			return origin().getJSONObject("user").getString("screen_name");
+			return DoubanUtil.stripText(origin().getJSONObject("user").getString("screen_name"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -40,7 +40,7 @@ public class Broadcast extends JSONObject{
 
 	public String getOriginTitle() {
 		try {
-			return origin().getString("title");
+			return DoubanUtil.stripText(origin().getString("title"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -49,7 +49,7 @@ public class Broadcast extends JSONObject{
 
 	public String getOriginText() {
 		try {
-			return origin().getString("text");
+			return DoubanUtil.stripText(origin().getString("text").equals("") ? "" : "\" " + origin().getString("text") +" \"");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +58,7 @@ public class Broadcast extends JSONObject{
 
 	public String getAttachTitle() {
 		try {
-			return (attach == null) ? "" : attach.getString("title");
+			return DoubanUtil.stripText((attach == null) ? "" : attach.getString("title"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -67,7 +67,17 @@ public class Broadcast extends JSONObject{
 
 	public String getAttachDesc() {
 		try {
-			return (attach == null) ? "" : attach.getString("description");
+			return DoubanUtil.stripText((attach == null) ? "" : attach.getString("description"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public String getAttachImg() {
+		try {
+			if (attach == null) return "";
+			return attach.getJSONArray("media").getJSONObject(0).getString("src");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -86,6 +96,15 @@ public class Broadcast extends JSONObject{
 	public String getScreenName() {
 		try {
 			return obj.getJSONObject("user").getString("screen_name");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public String getExtra() {
+		try {
+			return origin().getString("comments_count") + "»Ø¸´ " + origin().getString("like_count") + "Ï²»¶ " + origin().getString("reshared_count") + "×ª²¥ ";
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

@@ -4,7 +4,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +30,7 @@ public class BroadcastView extends LinearLayout {
 		addView(avatar);
 		addView(makeContentView(context));
 		
+		//TODO: use fragment.
 		this.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -41,32 +41,21 @@ public class BroadcastView extends LinearLayout {
 		});
 	}
 
-    private String stripText(String text) {
-    	Log.i("before", text);
-    	text = text.replaceFirst("\\[score\\]", " ( ")
-    			.replaceFirst("\\[/score\\]", "星 )")
-    			.replaceAll("\\r", "")
-    			.replaceAll("\\n", "")
-    			.replaceAll(" +", " ");
-    	Log.i("after", text);
-    	return text;
-    }
-
     //TODO: refactor this, user a template
     private LinearLayout makeContentView(Context context) {
     	LinearLayout content = new LinearLayout(context);
     	content.setOrientation(VERTICAL);
     	content.setPadding(0, 12, 25, 12);
-		
+
     	TextView title = new TextView(context);
 		String text = item.getOriginScreenName() + " "	+ item.getOriginTitle() + " " + item.getAttachTitle();
-		title.setText(stripText(text));
+		title.setText(text);
 		title.setTextColor(0xff606060);
 		content.addView(title);
 
-		if ((text = item.getAttachDesc()) != "") {
+		if (!(text = item.getAttachDesc()).equals("")) {
 			TextView description = new TextView(context);
-			description.setText(stripText(text));
+			description.setText(DoubanUtil.stripText(text));
 			description.setBackgroundColor(0xffe0e0e0);
 			description.setTextSize(10);
 			description.setPadding(3, 3, 3, 3);
@@ -76,16 +65,16 @@ public class BroadcastView extends LinearLayout {
 		TextView saying = new TextView(context);
 		text = item.getOriginText();
 		if (!text.equals("")) {
-			saying.setText("\" "+stripText(text)+" \"");
+			saying.setText(DoubanUtil.stripText(text));
 			saying.setTextSize(12);
 			content.addView(saying);
 		}
 
-		if (item.reshared) {
-			TextView extra = new TextView(context);
-			extra.setText("由" + item.getScreenName() + "转播");
-			content.addView(extra);
-		}
+		TextView extra = new TextView(context);
+		text = item.getExtra();
+		if (item.reshared) text += ("  由" + item.getScreenName() + "转播");
+		extra.setText(text);
+		content.addView(extra);
     	return content;
     }
 }

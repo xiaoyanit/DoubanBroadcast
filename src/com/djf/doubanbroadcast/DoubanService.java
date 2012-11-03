@@ -23,6 +23,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.StrictMode;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -94,6 +95,7 @@ public class DoubanService {
 			try {
 				response = new DefaultHttpClient().execute(request);
 				bitmap = BitmapFactory.decodeStream(response.getEntity().getContent());
+				Log.i("why",response.getStatusLine().getStatusCode()+"");
 			} catch (Exception e) {
 				e.printStackTrace();
 				return false;
