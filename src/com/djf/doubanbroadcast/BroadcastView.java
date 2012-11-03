@@ -1,7 +1,5 @@
 package com.djf.doubanbroadcast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -14,18 +12,18 @@ import android.widget.TextView;
 
 //TODO: refactor this, it's a mess now...
 public class BroadcastView extends LinearLayout {
-	private JSONObject json;
+	private Broadcast item;
+	
+	public BroadcastView(Context context) {
+		super(context);
+	}
 
     public BroadcastView(final MainActivity context, final JSONObject json) {
 		super(context);
-		this.json = json;
+		this.item = new Broadcast(json);
 
 		ImageView avatar = new ImageView(context);
-		try {
-			context.service.downloadImage(json.getJSONObject("user").getString("small_avatar"), avatar);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		context.service.downloadImage(item.getOriginAvatar(), avatar);
 
 		avatar.setPadding(14, 14, 14, 14);
 
@@ -54,50 +52,39 @@ public class BroadcastView extends LinearLayout {
     	return text;
     }
 
+    //TODO: refactor this, user a template
     private LinearLayout makeContentView(Context context) {
     	LinearLayout content = new LinearLayout(context);
     	content.setOrientation(VERTICAL);
     	content.setPadding(0, 12, 25, 12);
-		try {
-			String text;
-			JSONObject reshare = json.has("reshared_status") ? json.getJSONObject("reshared_status") : null;
-			JSONArray attachArray = (reshare != null ? reshare : json).getJSONArray("attachments");
+		
+    	TextView title = new TextView(context);
+		String text = item.getOriginScreenName() + " "	+ item.getOriginTitle() + " " + item.getAttachTitle();
+		title.setText(stripText(text));
+		title.setTextColor(0xff606060);
+		content.addView(title);
 
-			JSONObject attach = (attachArray.length() == 0) ? null : attachArray.getJSONObject(0);
+		if ((text = item.getAttachDesc()) != "") {
+			TextView description = new TextView(context);
+			description.setText(stripText(text));
+			description.setBackgroundColor(0xffe0e0e0);
+			description.setTextSize(10);
+			description.setPadding(3, 3, 3, 3);
+			content.addView(description);
+		}
 
-			TextView title = new TextView(context);
-			text = (reshare != null ? reshare : json).getJSONObject("user").getString("screen_name") + " "
-					+ (reshare != null ? reshare : json).getString("title") + " "
-					+ (attach != null ? attach.getString("title") : "");
-			title.setText(stripText(text));
-			title.setTextColor(0xff404040);
-			content.addView(title);
+		TextView saying = new TextView(context);
+		text = item.getOriginText();
+		if (!text.equals("")) {
+			saying.setText("\" "+stripText(text)+" \"");
+			saying.setTextSize(12);
+			content.addView(saying);
+		}
 
-			if (attach != null && !attach.getString("description").equals("")) {
-				TextView description = new TextView(context);
-				description.setText(stripText(attach.getString("description")));
-				description.setBackgroundColor(0xffe0e0e0);
-				description.setTextSize(10);
-				description.setPadding(3, 3, 3, 3);
-				content.addView(description);
-			}
-
-			TextView saying = new TextView(context);
-			text = (reshare != null ? reshare : json).getString("text");
-			if (!text.equals("")) {
-				saying.setText("\" "+stripText(text)+" \"");
-				saying.setTextSize(12);
-				content.addView(saying);
-			}
-
-			if (reshare != null) {
-				TextView extra = new TextView(context);
-				extra.setText("由"+json.getJSONObject("user").getString("screen_name")+"转播");
-				content.addView(extra);
-			}
-
-		} catch (JSONException e) {
-			e.printStackTrace();
+		if (item.reshared) {
+			TextView extra = new TextView(context);
+			extra.setText("由" + item.getScreenName() + "转播");
+			content.addView(extra);
 		}
     	return content;
     }

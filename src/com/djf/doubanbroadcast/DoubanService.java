@@ -30,7 +30,7 @@ import android.widget.Toast;
 // TODO: Maybe make this a subclass of Service?
 public class DoubanService {
 	public static final String CALLBACK = "http://myappdjf.com";
-	
+
 	private String accessToken;
 	private String user;
 
@@ -62,7 +62,7 @@ public class DoubanService {
 		}
 		return null;
 	}
-	
+
 	public void downloadImage(String url, ImageView view) {
 		DownloadImageTask task = new DownloadImageTask(view);
 		task.execute(url);
@@ -72,7 +72,7 @@ public class DoubanService {
 		PostNewBroadcastTask postTask = new PostNewBroadcastTask(activity);
 		postTask.execute(text);
 	}
-	
+
 	public void getPosts(MainActivity activity) {
 		GetAllPostsTask tast = new GetAllPostsTask(activity);
 		tast.execute();
@@ -81,7 +81,7 @@ public class DoubanService {
 	public class DownloadImageTask extends AsyncTask<String, Void, Boolean> {
 		private Bitmap bitmap;
 		private ImageView target;
-		
+
 		public DownloadImageTask(ImageView view) {
 			super();
 			target = view;
@@ -100,7 +100,7 @@ public class DoubanService {
 			}
 			return true;
 		}
-		
+
 		@Override
 		protected void onPostExecute(Boolean result) {
 			target.setImageBitmap(bitmap);
@@ -111,7 +111,7 @@ public class DoubanService {
 	private class GetAllPostsTask extends AsyncTask<String, Void, Boolean> {
 		private JSONArray posts;
 		private MainActivity mActivity;
-		
+
 		public GetAllPostsTask(MainActivity activity) {
 			super();
 			this.mActivity = activity;
