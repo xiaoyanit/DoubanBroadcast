@@ -7,11 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-public class BroadcastListAdapter extends BaseAdapter {
-	private MainActivity context;
+public class DoubanListAdapter extends BaseAdapter {
+	private AbstractActivity context;
 	private JSONArray sayings;
 
-	public BroadcastListAdapter(MainActivity context, JSONArray sayings) {
+	public DoubanListAdapter(AbstractActivity context, JSONArray sayings) {
 		this.context = context;
 		this.sayings = sayings;
 	}

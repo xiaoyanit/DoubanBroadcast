@@ -17,11 +17,13 @@ public class BroadcastView extends LinearLayout {
 		super(context);
 	}
 
-    public BroadcastView(final MainActivity context, final JSONObject json) {
+    public BroadcastView(final AbstractActivity context, final JSONObject json) {
 		super(context);
 		this.item = new Broadcast(json);
 
 		ImageView avatar = new ImageView(context);
+		avatar.setMinimumHeight(50);
+		avatar.setMinimumWidth(50);
 		context.service.downloadImage(item.getOriginAvatar(), avatar);
 
 		avatar.setPadding(14, 14, 14, 14);
@@ -29,9 +31,9 @@ public class BroadcastView extends LinearLayout {
 		//TODO: cache avatar.
 		addView(avatar);
 		addView(makeContentView(context));
-		
+
 		//TODO: use fragment.
-		this.setOnClickListener(new OnClickListener() {
+		if (context instanceof MainActivity) this.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
 				Intent intent = new Intent(context, ItemActivity.class);
@@ -74,6 +76,7 @@ public class BroadcastView extends LinearLayout {
 		text = item.getExtra();
 		if (item.reshared) text += ("  ÓÉ" + item.getScreenName() + "×ª²¥");
 		extra.setText(text);
+		extra.setTextColor(0xff888888);
 		content.addView(extra);
     	return content;
     }

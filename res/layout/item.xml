@@ -1,7 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
-
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
     <ImageView
         android:id="@+id/item_avatar"
         android:layout_width="wrap_content"
@@ -9,7 +13,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/ic_action_search" />
-
+
     <LinearLayout
         android:id="@+id/item_wrapper"
         android:layout_width="fill_parent"
@@ -21,55 +25,114 @@
             android:id="@+id/item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-
+
             <TextView
                 android:id="@+id/item_user"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Irachex"
                 android:textColor="#000000"
                 android:textSize="20dp" />
-
+
             <TextView
                 android:id="@+id/item_user_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="推荐单曲" />
+                android:layout_marginLeft="5dp" />
 
         </LinearLayout>
-
+
         <LinearLayout
             android:id="@+id/item_attach"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="#f0f0f0"
-            android:paddingBottom="3dp"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
-            android:paddingTop="3dp" >
-
+            android:background="#f0f0f0" >
+
             <TextView
                 android:id="@+id/item_attach_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_weight="1" />
-
+                android:layout_weight="0" />
+
             <ImageView
                 android:id="@+id/item_attach_img"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|right"
-                android:layout_weight="1" />
+                android:layout_weight="0" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/item_saying"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" >
+
+            <TextView
+                android:id="@+id/item_liked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#E9F4E9"
+                android:gravity="center"
+                android:minHeight="25dp"
+                android:minWidth="55dp"
+                android:textColor="#888888"
+                android:textSize="14dp" />
+            <TextView
+                android:id="@+id/item_reshared"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="#E9F4E9"
+                android:gravity="center"
+                android:minHeight="25dp"
+                android:minWidth="55dp"
+                android:textColor="#888888"
+                android:textSize="14dp" />
+
         </LinearLayout>
 
     </LinearLayout>
+
+</LinearLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <EditText
+        android:id="@+id/item_new_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/item_new_button"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="发布评论"
+        android:onClick="postNewComment"
+        android:textSize="12dp" />
+
+</LinearLayout>
+
+<ListView
+    android:id="@+id/comments"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="5dp" >
+</ListView>
 
 </LinearLayout>

@@ -14,10 +14,23 @@ public class Broadcast extends JSONObject{
 		reshared = obj.has("reshared_status");
 		try {
 			JSONArray attachs = origin().getJSONArray("attachments");
-			if (attachs.length() != 0) attach = attachs.getJSONObject(0);
+			if (attachs.length() != 0 && !attachs.getJSONObject(0).getString("description").equals("")) attach = attachs.getJSONObject(0);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public boolean hasAttach() {
+		return (attach != null);
+	}
+
+	public String getId() {
+		try {
+			return origin().getString("id");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	public String getOriginAvatar() {
@@ -104,10 +117,49 @@ public class Broadcast extends JSONObject{
 
 	public String getExtra() {
 		try {
-			return origin().getString("comments_count") + "»Ø¸´ " + origin().getString("like_count") + "Ï²»¶ " + origin().getString("reshared_count") + "×ª²¥ ";
+			String ret = origin().getString("comments_count") + "»Ø¸´  ";
+			if (!origin().getString("like_count").equals("0")) ret += (origin().getString("like_count") + "Ï²»¶  ");
+			if (!origin().getString("reshared_count").equals("0")) ret += (origin().getString("reshared_count") + "×ª²¥  ");
+			return ret;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return "";
+	}
+
+	public String getLikeCount() {
+		try {
+			return origin().getString("like_count") + "ÔÞ";
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+	public String getReshareCount() {
+		try {
+			return origin().getString("reshared_count") + "×ª²¥";
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+
+	public boolean Liked() {
+		try {
+			return obj.getBoolean("liked");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	public void setLiked(boolean b) {
+		try {
+			obj.remove("liked");
+			obj.put("liked", b);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 }
